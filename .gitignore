@@ -1,0 +1,29 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+
+# Jupyter Notebooks
+.ipynb_checkpoints
+
+# IDEs
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Project specific
+*.mp4
+*.avi
+screenshots/
+
+# Cloned dependencies
+models/unitree_mujoco/
+models/unitree_rl_gym/
+rsl_rl/

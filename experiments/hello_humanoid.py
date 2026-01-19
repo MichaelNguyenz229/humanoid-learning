@@ -1,31 +1,37 @@
 import mujoco
 import mujoco.viewer
+import os
 import numpy as np
 
-# Load the humanoid model (this comes built-in with MuJoCo)
-model = mujoco.MjModel.from_xml_string("""
-<mujoco>
-  <worldbody>
-    <light diffuse=".5 .5 .5" pos="0 0 3" dir="0 0 -1"/>
-    <geom type="plane" size="1 1 0.1" rgba=".9 0 0 1"/>
-    <body pos="0 0 1">
-      <joint type="free"/>
-      <geom type="sphere" size=".1" rgba="0 .9 0 1"/>
-    </body>
-  </worldbody>
-</mujoco>
-""")
+# Path to Unitree G1 model
+model_path = os.path.join("models", "unitree_mujoco", "unitree_robots", "g1", "scene.xml")
+
+# Load the G1 humanoid
+model = mujoco.MjModel.from_xml_path(model_path)
 data = mujoco.MjData(model)
 
-print(f"🤖 Humanoid loaded!")
+print(f"🤖 Unitree G1 Humanoid loaded!")
 print(f"   - Number of joints: {model.nv}")
 print(f"   - Number of actuators: {model.nu}")
 
-# Launch the interactive viewer
+# Store the initial standing position
+mujoco.mj_resetDataKeyframe(model, data, 0)  # Reset to default pose
+initial_qpos = data.qpos.copy()
+
+print("\n🎮 Controls:")
+print("   - Try clicking/dragging the robot")
+print("   - Watch it try to recover!")
+print("   - Press ESC to exit\n")
+
+# Simple PD controller gains
+kp = 1000  # Position gain
+kd = 5   # Velocity gain
+
 with mujoco.viewer.launch_passive(model, data) as viewer:
     while viewer.is_running():
-        # Step the physics simulation forward
-        mujoco.mj_step(model, data)
+        # PD control: try to return to initial pose
+        data.ctrl[:] = kp * (initial_qpos[7:] - data.qpos[7:]) - kd * data.qvel[6:]
         
-        # Sync the viewer with the simulation
+        # Step physics
+        mujoco.mj_step(model, data)
         viewer.sync()
