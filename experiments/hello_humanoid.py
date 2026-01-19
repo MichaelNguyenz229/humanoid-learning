@@ -4,9 +4,13 @@ import os
 import numpy as np
 
 # Path to Unitree G1 model
-model_path = os.path.join("models", "unitree_mujoco", "unitree_robots", "g1", "scene.xml")
+PROJECT_ROOT = os.path.abspath("..")
+#model_path = os.path.join(PROJECT_ROOT,"models", "unitree_rl_gym", "resources", "robots", "g1_description", "scene.xml")
 
+#path with terrain
+model_path = os.path.join(PROJECT_ROOT,"models", "unitree_mujoco", "unitree_robots", "g1", "scene.xml")
 # Load the G1 humanoid
+
 model = mujoco.MjModel.from_xml_path(model_path)
 data = mujoco.MjData(model)
 
@@ -24,7 +28,7 @@ print("   - Watch it try to recover!")
 print("   - Press ESC to exit\n")
 
 # Simple PD controller gains
-kp = 1000  # Position gain
+kp = 100  # Position gain
 kd = 5   # Velocity gain
 
 with mujoco.viewer.launch_passive(model, data) as viewer:

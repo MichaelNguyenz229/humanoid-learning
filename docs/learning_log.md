@@ -52,3 +52,118 @@ SUPER cool to see actual intelligence vs. mechanical stiffness. This is the diff
 - Understand how the training works
 - Train my own model from scratch
 - Compare training curves and behavior
+
+---
+
+## Day 2 - Vision Analysis & Test Results
+
+### Vision vs Proprioception Investigation
+
+**Question:** Does the G1 policy use vision?
+
+**Method:** 
+- Checked observation inputs (47 values - all numerical)
+- Searched scene.xml for cameras (none found)
+- Analyzed policy architecture
+
+**Conclusion:**
+This is a **proprioception-only policy** using:
+- Joint encoders (position, velocity)
+- IMU (orientation, angular velocity)
+- Previous actions
+- Gait phase timing
+
+**No vision input** - explains stair-climbing failure:
+- Cannot anticipate terrain changes
+- Only reacts after physical contact
+- Would need either: (1) vision for prediction, or (2) training with stairs in data
+
+### Test Results Summary
+
+**Stairs Test (15cm steps):**
+- **70%:** Trips on step 1, cannot recover
+- **20%:** Avoids stairs entirely (steers away)
+- **10%:** Bumps edge, stumbles, restabilizes
+
+**Key Insights:**
+- Policy optimized for flat ground (shuffle gait)
+- Has robust balance recovery for small perturbations
+- Cannot handle sustained elevation changes
+- Shows some environmental awareness (avoidance behavior)
+
+### Next Steps
+
+**Immediate (Sessions 3-4):**
+- Create varied scenarios: slopes, obstacles, flat control
+- Test all with same policy
+- Build failure mode taxonomy
+
+**Soon (Sessions 5-6):**
+- Add camera rendering to scenes
+- Visualize robot's perspective
+- Analyze vision vs proprioception gap
+
+**Later (Optional):**
+- Train improved policy with terrain randomization
+- Explore vision-based policies (GR00T, etc.)
+
+### Technical Understanding Gained
+
+- ✅ File path management in MuJoCo/XML
+- ✅ Working directory context for relative paths
+- ✅ Policy input/output structure
+- ✅ Observation preprocessing and scaling
+- ✅ PD control layer below RL policy
+- ✅ Difference between model (.xml) and policy (.pt) files
+
+
+---
+
+## Day 2 continued - Slope Testing & Documentation
+
+### What I Built
+- Created slope scenario (10° incline)
+- Tested policy on gradual elevation changes
+- Built comprehensive test results document
+
+### Technical Challenges Solved
+**Problem:** Slope test robot was frozen
+- **Root cause:** Observation vector building was incomplete (file truncated)
+- **Solution:** Completed the observation construction and policy inference code
+- **Learning:** Always verify the full control loop is present!
+
+**Problem:** Slope facing wrong direction
+- **Root cause:** Euler angle sign (positive vs negative rotation)
+- **Solution:** Changed `euler="0 0.174 0"` to `euler="0 -0.174 0"`
+- **Learning:** Rotation directions matter! Negative = opposite direction
+
+### Key Insights
+**Slope vs Stairs:**
+- Slopes: ~40% success (gradual is manageable!)
+- Stairs: 0% success (discrete too hard)
+- **Insight:** Policy handles gradual changes better than discrete ones
+
+**Failure modes on slope:**
+- Robot climbs halfway, then body angle increases too much
+- Falls off side when tilted
+- Shows proprioception can't compensate for sustained orientation changes
+
+### Skills Gained
+- ✅ Debugging complex simulation issues
+- ✅ Understanding observation vector structure
+- ✅ Creating varied test scenarios
+- ✅ Writing professional technical documentation
+- ✅ Organizing portfolio-ready reports
+
+### Documentation Created
+- `test_results.md` - Professional summary of all test scenarios
+- Comparison table showing terrain difficulty hierarchy
+- Recommendations for policy improvement
+
+### What's Next
+- Option A: Add camera rendering (see robot's perspective)
+- Option B: Build automated test runner (metrics collection)
+- Option C: Train improved policy with terrain randomization
+
+**Total time today:** ~2-3 hours  
+**Feeling:** Confident! Built real portfolio content.
