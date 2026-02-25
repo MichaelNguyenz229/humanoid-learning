@@ -2,7 +2,6 @@
 
 Evaluating a pre-trained reinforcement learning locomotion policy on the Unitree G1 humanoid in MuJoCo. The goal was to understand the limits of proprioception-only control by designing obstacle scenarios and systematically testing failure modes.
 
-![G1 Baseline Walk](assets/g1_baseline_walk.png)
 
 ## Overview
 
@@ -13,6 +12,7 @@ The core finding: the policy relies entirely on proprioception (joint encoders, 
 ## Experiments
 
 ### 1. Baseline Walk
+![G1 Baseline Walk](assets/g1_baseline_walk.png)
 Loaded the pre-trained policy on flat ground to establish a performance baseline. The policy produces coordinated locomotion across 12 joints simultaneously at 50Hz — fundamentally different from classical PD control which simply holds a pose.
 
 ### 2. Stairs Test
