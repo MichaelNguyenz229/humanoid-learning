@@ -42,9 +42,9 @@ The answer is no in the current setup: there are no open-source vision-based loc
 
 | Scenario | Outcome | Reason |
 |----------|---------|--------|
-| Flat ground | ✅ Success | Policy trained on flat terrain |
-| 10° slope | ⚠️ Partial | Gradual change manageable |
-| Stairs (15cm steps) | ❌ Fail | Discrete elevation, no vision |
+| Flat ground |  Success | Policy trained on flat terrain |
+| 10° slope |  Partial | Gradual change manageable |
+| Stairs (15cm steps) |  Fail | Discrete elevation, no vision |
 
 The policy uses a 47-dimensional observation vector consisting of joint positions, joint velocities, IMU orientation, angular velocity, velocity commands, and gait phase signals. No camera or depth input.
 
