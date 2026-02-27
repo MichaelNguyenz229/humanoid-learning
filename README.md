@@ -7,7 +7,7 @@ Evaluating a pre-trained reinforcement learning locomotion policy on the Unitree
 
 This project loads Unitree's pre-trained G1 walking policy and evaluates it against increasingly difficult terrain scenarios. Rather than training from scratch, the focus is on behavioral evaluation — understanding what the policy can and cannot do, and why.
 
-The core finding: the policy relies entirely on proprioception (joint encoders, IMU, gait phase) with no vision input. This explains its failure on discrete obstacles like stairs, where anticipating terrain changes is required.
+The core finding: the policy relies entirely on proprioception with no vision input. This explains its failure on discrete obstacles like stairs, where anticipating terrain changes is required.
 
 ## Experiments
 
