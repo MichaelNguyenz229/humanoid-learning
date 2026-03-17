@@ -6,23 +6,23 @@ import torch
 import time
 
 # Paths
-PROJECT_ROOT = os.path.abspath("..")
+PROJECT_ROOT = os.path.abspath("../..")
 ROBOT_DIR = os.path.join(PROJECT_ROOT, "models", "unitree_rl_gym", "resources", "robots", "g1_description")
 POLICY_PATH = os.path.join(PROJECT_ROOT, "models", "unitree_rl_gym", "deploy", "pre_train", "g1", "motion.pt")
 
 # Config (from g1.yaml)
-SIMULATION_DT = 0.002
-CONTROL_DECIMATION = 10
-KPS = np.array([100, 100, 100, 150, 40, 40, 100, 100, 100, 150, 40, 40], dtype=np.float32)
-KDS = np.array([2, 2, 2, 4, 2, 2, 2, 2, 2, 4, 2, 2], dtype=np.float32)
-DEFAULT_ANGLES = np.array([-0.1, 0.0, 0.0, 0.3, -0.2, 0.0, -0.1, 0.0, 0.0, 0.3, -0.2, 0.0], dtype=np.float32)
-ANG_VEL_SCALE = 0.25
-DOF_POS_SCALE = 1.0
-DOF_VEL_SCALE = 0.05
-ACTION_SCALE = 0.25
-CMD_SCALE = np.array([2.0, 2.0, 0.25], dtype=np.float32)
-NUM_ACTIONS = 12
-NUM_OBS = 47
+SIMULATION_DT = 0.002 #Delta Time -> a physics step every 0.002 seconds -> 500 steps per second
+CONTROL_DECIMATION = 10 # Policy runs every 10 physics steps
+KPS = np.array([100, 100, 100, 150, 40, 40, 100, 100, 100, 150, 40, 40], dtype=np.float32) #KP for each 12 joints
+KDS = np.array([2, 2, 2, 4, 2, 2, 2, 2, 2, 4, 2, 2], dtype=np.float32) #KD for each 12 joints
+DEFAULT_ANGLES = np.array([-0.1, 0.0, 0.0, 0.3, -0.2, 0.0, -0.1, 0.0, 0.0, 0.3, -0.2, 0.0], dtype=np.float32) #Default joint angles
+ANG_VEL_SCALE = 0.25 #Configured angular velocity scaler for specific policy
+DOF_POS_SCALE = 1.0 #Configured DOF position scaler for specific policy
+DOF_VEL_SCALE = 0.05 #DOF velocity scalaer for specific policy
+ACTION_SCALE = 0.25 #Action scaler means previous actions - this scales the actions output
+CMD_SCALE = np.array([2.0, 2.0, 0.25], dtype=np.float32) #CMD scaler for policy
+NUM_ACTIONS = 12 #Total number of actions (joint control)
+NUM_OBS = 47 #Total number of observations (angular velocity, gravity orientation, command, joint positions, joint velocities, previous actions, gait phase)
 CMD = np.array([0.5, 0, 0], dtype=np.float32)  # Walk forward slowly
 
 def get_gravity_orientation(quaternion):
@@ -124,6 +124,15 @@ with mujoco.viewer.launch_passive(model, data) as viewer:
             obs[9+NUM_ACTIONS:9+2*NUM_ACTIONS] = dqj_scaled
             obs[9+2*NUM_ACTIONS:9+3*NUM_ACTIONS] = action
             obs[9+3*NUM_ACTIONS:9+3*NUM_ACTIONS+2] = np.array([sin_phase, cos_phase])
+            
+            if counter == CONTROL_DECIMATION:
+                print("=== OBS VECTOR AT STEP 0 ===")
+                print(obs)
+                print(f"obs[0]: {obs[0]}")
+                print(f"obs[3]: {obs[3]}")
+                print(f"obs[6]: {obs[6]}")
+                print(f"obs[9]: {obs[9]}")
+                print(f"obs[45]: {obs[45]}")
             
             # Policy inference
             obs_tensor = torch.from_numpy(obs).unsqueeze(0)

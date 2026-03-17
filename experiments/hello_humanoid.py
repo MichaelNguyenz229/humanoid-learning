@@ -4,7 +4,7 @@ import os
 import numpy as np
 
 # Path to Unitree G1 model
-PROJECT_ROOT = os.path.abspath("..")
+PROJECT_ROOT = os.path.abspath("../..")
 #model_path = os.path.join(PROJECT_ROOT,"models", "unitree_rl_gym", "resources", "robots", "g1_description", "scene.xml")
 
 #path with terrain
