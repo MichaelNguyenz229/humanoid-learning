@@ -6,10 +6,12 @@ import cv2
 import torch
 import time
 
+import sys
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from config import ROBOT_DIR, POLICY_PATH
+
 # Paths
 PROJECT_ROOT = os.path.abspath("..")
-ROBOT_DIR = os.path.join(PROJECT_ROOT, "models", "unitree_rl_gym", "resources", "robots", "g1_description")
-POLICY_PATH = os.path.join(PROJECT_ROOT, "models", "unitree_rl_gym", "deploy", "pre_train", "g1", "motion.pt")
 RESULTS_DIR = os.path.join(PROJECT_ROOT, "results", "camera_views")
 
 os.makedirs(RESULTS_DIR, exist_ok=True)

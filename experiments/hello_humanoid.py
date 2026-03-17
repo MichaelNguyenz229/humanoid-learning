@@ -4,11 +4,14 @@ import os
 import numpy as np
 
 # Path to Unitree G1 model
-PROJECT_ROOT = os.path.abspath("../..")
 #model_path = os.path.join(PROJECT_ROOT,"models", "unitree_rl_gym", "resources", "robots", "g1_description", "scene.xml")
 
+import sys
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from config import ROBOT_DIR
+
 #path with terrain
-model_path = os.path.join(PROJECT_ROOT,"models", "unitree_mujoco", "unitree_robots", "g1", "scene.xml")
+model_path = os.path.join(ROBOT_DIR, "scene.xml")
 # Load the G1 humanoid
 
 model = mujoco.MjModel.from_xml_path(model_path)
