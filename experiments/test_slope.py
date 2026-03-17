@@ -5,10 +5,9 @@ import numpy as np
 import torch
 import time
 
-# Paths
-PROJECT_ROOT = os.path.abspath("..")
-ROBOT_DIR = os.path.join(PROJECT_ROOT, "models", "unitree_rl_gym", "resources", "robots", "g1_description")
-POLICY_PATH = os.path.join(PROJECT_ROOT, "models", "unitree_rl_gym", "deploy", "pre_train", "g1", "motion.pt")
+import sys
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from config import ROBOT_DIR, POLICY_PATH
 
 # Config (from g1.yaml)
 SIMULATION_DT = 0.002

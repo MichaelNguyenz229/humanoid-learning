@@ -5,10 +5,9 @@ import numpy as np
 import torch
 import time
 
-# Paths
-PROJECT_ROOT = os.path.abspath("../..")
-ROBOT_DIR = os.path.join(PROJECT_ROOT, "models", "unitree_rl_gym", "resources", "robots", "g1_description")
-POLICY_PATH = os.path.join(PROJECT_ROOT, "models", "unitree_rl_gym", "deploy", "pre_train", "g1", "motion.pt")
+import sys
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from config import ROBOT_DIR, POLICY_PATH
 
 # Config (from g1.yaml)
 SIMULATION_DT = 0.002 #Delta Time -> a physics step every 0.002 seconds -> 500 steps per second
@@ -25,9 +24,10 @@ NUM_ACTIONS = 12 #Total number of actions (joint control)
 NUM_OBS = 47 #Total number of observations (angular velocity, gravity orientation, command, joint positions, joint velocities, previous actions, gait phase)
 CMD = np.array([0.5, 0, 0], dtype=np.float32)  # Walk forward slowly
 
+
 def get_gravity_orientation(quaternion):
     """Calculate gravity vector in body frame"""
-    qw, qx, qy, qz = quaternion
+    qw, qx, qy, qz = quaternion #This is mujoco's convention, splitting this insto 4 variable from data.qpos[3:7]
     gravity_orientation = np.zeros(3)
     gravity_orientation[0] = 2 * (-qz * qx + qw * qy)
     gravity_orientation[1] = -2 * (qz * qy + qw * qx)
