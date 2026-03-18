@@ -25,7 +25,7 @@ NUM_ACTIONS    = 12
 NUM_OBS        = 47
 
 # ── Sweep config ──────────────────────────────────────────────────────────────
-VX_SWEEP          = [round(v * 0.2, 1) for v in range(1, 11)]  # 0.2 → 2.0
+VX_SWEEP          = [round(v * 0.2, 1) for v in range(1, 16)]  # 0.4 → 4
 EPISODES_PER_SPEED = 5
 EPISODE_STEPS     = 5000   # 10 seconds (5000 * 0.002)
 FALL_HEIGHT       = 0.4    # meters — tune if needed
