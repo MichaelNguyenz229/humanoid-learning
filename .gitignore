@@ -27,3 +27,6 @@ screenshots/
 models/unitree_mujoco/
 models/unitree_rl_gym/
 rsl_rl/
+
+# Data
+results/
