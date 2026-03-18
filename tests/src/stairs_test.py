@@ -6,7 +6,7 @@ import torch
 import time
 
 import sys
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 from config import ROBOT_DIR, POLICY_PATH
 
 def create_staircase_xml(step_height,width,depth):
