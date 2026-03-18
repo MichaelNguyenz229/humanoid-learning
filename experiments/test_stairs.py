@@ -9,6 +9,19 @@ import sys
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from config import ROBOT_DIR, POLICY_PATH
 
+def create_staircase_xml(step_height,width,depth):
+
+  stairs_xml = f'''
+      <!-- Stairs -->
+      <geom name="step1" type="box" pos="{1 + (depth*1)} 0 {step_height/2}" size="{depth/2} {width/2} {step_height/2}" rgba="0.6 0.4 0.2 1"/>
+      <geom name="step2" type="box" pos="{1 + (depth*2)} 0 {step_height*2/2}" size="{depth/2} {width/2}  {step_height*2/2}" rgba="0.6 0.4 0.2 1"/>
+      <geom name="step3" type="box" pos="{1 + (depth*3)} 0 {step_height*3/2}" size="{depth/2} {width/2} {step_height*3/2}" rgba="0.6 0.4 0.2 1"/>
+      <geom name="step4" type="box" pos="{1 + (depth*4)} 0 {step_height*4/2}" size="{depth/2} {width/2} {step_height*4/2}" rgba="0.6 0.4 0.2 1"/>
+      <geom name="step5" type="box" pos="{1 + (depth*5)} 0 {step_height*5/2}" size="{depth/2} {width/2} {step_height*5/2}" rgba="0.6 0.4 0.2 1"/>
+    </worldbody>'''
+  
+  return stairs_xml
+
 # Config (from g1.yaml)
 SIMULATION_DT = 0.002 #Delta Time -> a physics step every 0.002 seconds -> 500 steps per second
 CONTROL_DECIMATION = 10 # Policy runs every 10 physics steps
@@ -22,7 +35,7 @@ ACTION_SCALE = 0.25 #Action scaler means previous actions - this scales the acti
 CMD_SCALE = np.array([2.0, 2.0, 0.25], dtype=np.float32) #CMD scaler for policy
 NUM_ACTIONS = 12 #Total number of actions (joint control)
 NUM_OBS = 47 #Total number of observations (angular velocity, gravity orientation, command, joint positions, joint velocities, previous actions, gait phase)
-CMD = np.array([0.5, 0, 0], dtype=np.float32)  # Walk forward slowly
+CMD = np.array([2, 0, 0], dtype=np.float32)  # Walk forward slowly
 
 
 def get_gravity_orientation(quaternion):
@@ -46,20 +59,26 @@ os.chdir(ROBOT_DIR)
 with open("scene.xml", 'r') as f:
     xml_content = f.read()
 
-stairs_xml = '''
-    <!-- Stairs -->
-    <geom name="step1" type="box" pos="1.0 0 0.075" size="0.3 0.5 0.075" rgba="0.6 0.4 0.2 1"/>
-    <geom name="step2" type="box" pos="1.6 0 0.225" size="0.3 0.5 0.075" rgba="0.6 0.4 0.2 1"/>
-    <geom name="step3" type="box" pos="2.2 0 0.375" size="0.3 0.5 0.075" rgba="0.6 0.4 0.2 1"/>
-    <geom name="step4" type="box" pos="2.8 0 0.525" size="0.3 0.5 0.075" rgba="0.6 0.4 0.2 1"/>
-    <geom name="step5" type="box" pos="3.4 0 0.675" size="0.3 0.5 0.075" rgba="0.6 0.4 0.2 1"/>
-  </worldbody>'''
+
+
+
+
+#stairs_xml = create_staircase_xml(step_height=0.225, width=1.0, depth=0.6)  # 50% taller - how much sooner does it fail?
+#stairs_xml = create_staircase_xml(step_height=0.15, width=1.0, depth=0.6)   # baseline
+stairs_xml = create_staircase_xml(step_height=0.075, width=1.0, depth=0.6)  # 50% shorter - can it go longer?
+
+
+
+
+
 
 modified_xml = xml_content.replace('</worldbody>', stairs_xml)
+
 
 print("Loading G1 with stairs...")
 model = mujoco.MjModel.from_xml_path("scene.xml")
 model = mujoco.MjModel.from_xml_string(modified_xml)
+#model = mujoco.MjModel.from_xml_string(xml_content)
 data = mujoco.MjData(model)
 model.opt.timestep = SIMULATION_DT
 
@@ -150,9 +169,9 @@ with mujoco.viewer.launch_passive(model, data) as viewer:
             time.sleep(time_until_next_step)
         
         # Print progress every 2 seconds
-        if counter % 1000 == 0:
+        if counter % 100 == 0:
             elapsed = time.time() - start_time
             x_pos = data.qpos[0]
-            print(f"Time: {elapsed:.1f}s | Robot X position: {x_pos:.2f}m")
+            print(f"Time: {elapsed:.1f}s | X: {x_pos:.2f}m | Z: {data.qpos[2]:.2f}m")
 
 print("\n✅ Simulation complete!")
