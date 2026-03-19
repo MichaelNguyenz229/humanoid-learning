@@ -28,9 +28,9 @@ The gait phase uses `sin` and `cos` together so the signal wraps continuously wi
 
 ---
 
-## Fall Detection Logging (`results/speed_test.csv`)
+## Fall Detection Logging (`collections/collections_data/fall_data.csv`)
 
-To support a data-driven fall predictor, `eval_speed_test.py` logs the following fields every 50 steps per episode. All fields are derived exclusively from onboard sensors — no MuJoCo-only state — making any model trained on this data transferable to real hardware.
+To support a data-driven fall predictor, `speed_collections.py` logs the following fields every 50 steps per episode. All fields are derived exclusively from onboard sensors — no MuJoCo-only state — making any model trained on this data transferable to real hardware.
 
 | Field | Source | Description |
 |-------|--------|-------------|
