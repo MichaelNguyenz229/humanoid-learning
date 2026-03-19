@@ -10,8 +10,8 @@ import sys
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 from config import ROBOT_DIR, POLICY_PATH
 
-# ── Constants ─────────────────────────────────────────────────────────────────
-SIMULATION_DT      = 0.002
+# ── Constants (unchanged from your code) ──────────────────────────────────────
+SIMULATION_DT     = 0.002
 CONTROL_DECIMATION = 10
 KPS = np.array([100,100,100,150,40,40,100,100,100,150,40,40], dtype=np.float32)
 KDS = np.array([2,2,2,4,2,2,2,2,2,4,2,2], dtype=np.float32)
@@ -25,13 +25,13 @@ NUM_ACTIONS    = 12
 NUM_OBS        = 47
 
 # ── Sweep config ──────────────────────────────────────────────────────────────
-VX_SWEEP           = [round(v * 0.2, 1) for v in range(1, 16)]  # 0.2 → 3.0
+VX_SWEEP          = [round(v * 0.2, 1) for v in range(1, 16)]  # 0.4 → 4
 EPISODES_PER_SPEED = 5
-EPISODE_STEPS      = 5000  # 10 seconds at 0.002 dt
-FALL_HEIGHT        = 0.4   # meters
+EPISODE_STEPS     = 5000   # 10 seconds (5000 * 0.002)
+FALL_HEIGHT       = 0.4    # meters — tune if needed
 
 # ── Output ────────────────────────────────────────────────────────────────────
-LOG_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), "results", "speed_test.csv")
+LOG_PATH = os.path.join(os.path.dirname((os.path.dirname(__file__))), "results", "speed_test.csv")
 
 
 def get_gravity_orientation(quaternion):
@@ -49,69 +49,42 @@ def init_csv():
     os.makedirs(os.path.dirname(LOG_PATH), exist_ok=True)
     with open(LOG_PATH, "w", newline="") as f:
         csv.writer(f).writerow([
-            "episode_id", "step", "commanded_vx",
-            "pitch", "mean_torque", "torso_height", "fall_detected"
+            "run_id", "commanded_vx", "episode",
+            "outcome", "survival_time_s", "fall_detected"
         ])
 
-def log_timestep(episode_id, step, vx, pitch, mean_torque, torso_height, fell):
+def log_row(run_id, vx, episode, outcome, survival_time, fall_detected):
     with open(LOG_PATH, "a", newline="") as f:
         csv.writer(f).writerow([
-            episode_id, step, vx,
-            round(float(pitch), 4),
-            round(float(mean_torque), 4),
-            round(float(torso_height), 4),
-            fell
+            run_id, vx, episode, outcome,
+            round(survival_time, 3), fall_detected
         ])
 
 def run_episode(model, data, policy, vx, run_id, episode):
     """Run one episode headlessly. Returns (outcome, survival_time_s)."""
     mujoco.mj_resetData(model, data)
 
-    cmd            = np.array([vx, 0, 0], dtype=np.float32)
-    action         = np.zeros(NUM_ACTIONS, dtype=np.float32)
+    cmd = np.array([vx, 0, 0], dtype=np.float32)
+    action = np.zeros(NUM_ACTIONS, dtype=np.float32)
     target_dof_pos = DEFAULT_ANGLES.copy()
-    obs            = np.zeros(NUM_OBS, dtype=np.float32)
-    tau            = np.zeros(NUM_ACTIONS, dtype=np.float32)  # init so step-0 log is safe
-    counter        = 0
+    obs = np.zeros(NUM_OBS, dtype=np.float32)
+    counter = 0
 
     for step in range(EPISODE_STEPS):
-
-        # ── PD control + physics step ──────────────────────────────────────
+        # PD control + physics step
         tau = pd_control(target_dof_pos, data.qpos[7:], KPS,
                          np.zeros_like(KDS), data.qvel[6:], KDS)
         data.ctrl[:] = tau
         mujoco.mj_step(model, data)
         counter += 1
 
-        # ── Timestep log every 50 steps ───────────────────────────────────
-        if step % 50 == 0:
-            gravity = get_gravity_orientation(data.qpos[3:7])
-            log_timestep(
-                episode_id  = run_id,
-                step        = step,
-                vx          = vx,
-                pitch       = gravity[0],
-                mean_torque = np.mean(np.abs(tau)),
-                torso_height= data.qpos[2],
-                fell        = False
-            )
-
-        # ── Fall check ────────────────────────────────────────────────────
+        # Fall check
         if data.qpos[2] < FALL_HEIGHT:
             survival_time = step * SIMULATION_DT
-            gravity = get_gravity_orientation(data.qpos[3:7])
-            log_timestep(
-                episode_id  = run_id,
-                step        = step,
-                vx          = vx,
-                pitch       = gravity[0],
-                mean_torque = np.mean(np.abs(tau)),
-                torso_height= data.qpos[2],
-                fell        = True
-            )
+            log_row(run_id, vx, episode, "fall", survival_time, True)
             return "fall", survival_time
 
-        # ── Policy inference ──────────────────────────────────────────────
+        # Policy inference
         if counter % CONTROL_DECIMATION == 0:
             qj    = data.qpos[7:]
             dqj   = data.qvel[6:]
@@ -127,43 +100,35 @@ def run_episode(model, data, policy, vx, run_id, episode):
             t      = counter * SIMULATION_DT
             phase  = (t % period) / period
 
-            obs[:3]                                    = omega_sc
-            obs[3:6]                                   = gravity
-            obs[6:9]                                   = cmd * CMD_SCALE
-            obs[9:9+NUM_ACTIONS]                       = qj_scaled
-            obs[9+NUM_ACTIONS:9+2*NUM_ACTIONS]         = dqj_scaled
-            obs[9+2*NUM_ACTIONS:9+3*NUM_ACTIONS]       = action
-            obs[9+3*NUM_ACTIONS:9+3*NUM_ACTIONS+2]     = [
+            obs[:3]                          = omega_sc
+            obs[3:6]                         = gravity
+            obs[6:9]                         = cmd * CMD_SCALE
+            obs[9:9+NUM_ACTIONS]             = qj_scaled
+            obs[9+NUM_ACTIONS:9+2*NUM_ACTIONS]   = dqj_scaled
+            obs[9+2*NUM_ACTIONS:9+3*NUM_ACTIONS] = action
+            obs[9+3*NUM_ACTIONS:9+3*NUM_ACTIONS+2] = [
                 np.sin(2 * np.pi * phase),
                 np.cos(2 * np.pi * phase)
             ]
 
-            obs_tensor     = torch.from_numpy(obs).unsqueeze(0)
-            action         = policy(obs_tensor).detach().numpy().squeeze()
+            obs_tensor = torch.from_numpy(obs).unsqueeze(0)
+            action     = policy(obs_tensor).detach().numpy().squeeze()
             target_dof_pos = action * ACTION_SCALE + DEFAULT_ANGLES
 
-    # ── Survived full episode ─────────────────────────────────────────────
-    gravity = get_gravity_orientation(data.qpos[3:7])
-    log_timestep(
-        episode_id  = run_id,
-        step        = EPISODE_STEPS - 1,
-        vx          = vx,
-        pitch       = gravity[0],
-        mean_torque = np.mean(np.abs(tau)),
-        torso_height= data.qpos[2],
-        fell        = False
-    )
+    # Survived full duration
+    log_row(run_id, vx, episode, "timeout", EPISODE_STEPS * SIMULATION_DT, False)
     return "timeout", EPISODE_STEPS * SIMULATION_DT
 
 
 def main():
+    # Load model (flat terrain — no stairs)
     original_dir = os.getcwd()
     os.chdir(ROBOT_DIR)
     model = mujoco.MjModel.from_xml_path("scene.xml")
     model.opt.timestep = SIMULATION_DT
     os.chdir(original_dir)
 
-    data   = mujoco.MjData(model)
+    data = mujoco.MjData(model)
     policy = torch.jit.load(POLICY_PATH)
 
     init_csv()
