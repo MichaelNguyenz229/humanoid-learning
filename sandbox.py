@@ -18,13 +18,12 @@ from config import ROBOT_DIR, POLICY_PATH
 
 # ── Edit these ────────────────────────────────────────────────────────────────
 
-SCENE    = "flat"       # flat | stairs_low | stairs_mid | stairs_high |
-                        # slope_low | slope_mid | slope_high |
-                        # octave_low | octave_mid | octave_high
+# ── Edit these ────────────────────────────────────────────────────────────────
 
-VX       = 2.8          # speed in m/s (always positive)
+SCENE     = input("Scene (flat | stairs1 | stairs2 | ...): ").strip()
+VX        = float(input("Speed in m/s (e.g. 0.5): ").strip())
+DIRECTION = input("Direction (f - forward | b - backward | l - lateral): ").strip()
 
-DIRECTION = "backward"   # forward | backward | lateral
 
 # ─────────────────────────────────────────────────────────────────────────────
 
@@ -46,9 +45,9 @@ NUM_ACTIONS   = 12
 NUM_OBS       = 47
 
 DIRECTION_MAP = {
-    "forward":  lambda vx: np.array([ vx,  0, 0], dtype=np.float32),
-    "backward": lambda vx: np.array([-vx,  0, 0], dtype=np.float32),
-    "lateral":  lambda vx: np.array([  0, vx, 0], dtype=np.float32),
+    "f":  lambda vx: np.array([ vx,  0, 0], dtype=np.float32),
+    "b": lambda vx: np.array([-vx,  0, 0], dtype=np.float32),
+    "l":  lambda vx: np.array([  0, vx, 0], dtype=np.float32),
 }
 
 def get_gravity_orientation(quaternion):
@@ -64,20 +63,14 @@ def pd_control(target_q, q, kp, target_dq, dq, kd):
 
 
 # ── Load scene ────────────────────────────────────────────────────────────────
-if SCENE == "flat":
-    scene_path = os.path.join(ROBOT_DIR, "scene.xml")
-else:
-    scene_path = os.path.join(os.path.dirname(__file__), "scenes", f"{SCENE}.xml")
+scene_path = os.path.join(os.path.dirname(__file__), "scenes", f"{SCENE}.xml")
 
 if not os.path.exists(scene_path):
     print(f"Error: scene not found at {scene_path}")
     sys.exit(1)
 
-original_dir = os.getcwd()
-os.chdir(os.path.dirname(scene_path))
-model = mujoco.MjModel.from_xml_path(os.path.basename(scene_path))
+model = mujoco.MjModel.from_xml_path(scene_path)
 model.opt.timestep = SIMULATION_DT
-os.chdir(original_dir)
 
 data   = mujoco.MjData(model)
 policy = torch.jit.load(POLICY_PATH)
@@ -98,12 +91,21 @@ target_dof_pos = DEFAULT_ANGLES.copy()
 obs            = np.zeros(NUM_OBS,     dtype=np.float32)
 counter        = 0
 
+# paste this right before "with mujoco.viewer.launch_passive..."
+
+mujoco.mj_resetData(model, data)
+if DIRECTION == "b":
+    data.qpos[3:7] = [0, 0, 0, 1]
+elif DIRECTION == "l":
+    data.qpos[3:7] = [0.7071, 0, 0, -0.7071]
+mujoco.mj_forward(model, data)
+
 with mujoco.viewer.launch_passive(model, data) as viewer:
 
     # Track robot with camera
     viewer.cam.type        = mujoco.mjtCamera.mjCAMERA_TRACKING
     viewer.cam.trackbodyid = model.body('pelvis').id
-    viewer.cam.distance    = 3.0   # meters from robot 
+    viewer.cam.distance    = 5   # meters from robot 
     start = time.time()
 
     while viewer.is_running():

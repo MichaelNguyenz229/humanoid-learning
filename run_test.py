@@ -2,9 +2,9 @@
 run_test.py — Humanoid simulation test runner
 
 Usage:
-    mjpython run_test.py --scene stairs_low --direction forward
-    mjpython run_test.py --scene slope_mid  --direction backward
-    mjpython run_test.py --scene octave_high --direction lateral --viewer
+    mjpython run_test.py --scene stairs1 --direction forward
+    mjpython run_test.py --scene slope2  --direction backward
+    mjpython run_test.py --scene octave3 --direction lateral --viewer
     mjpython run_test.py --list
 
 Arguments:
@@ -24,15 +24,15 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 # Add entries here as you generate XMLs with the Unitree terrain tool
 SCENES = {
     "flat": "Flat terrain — baseline",
-    "stairs_low":   "Stairs — low step height",
-    "stairs_mid":   "Stairs — medium step height",
-    "stairs_high":  "Stairs — high step height",
-    "slope_low":    "Slope — shallow angle",
-    "slope_mid":    "Slope — medium angle",
-    "slope_high":   "Slope — steep angle",
-    "octave_low":   "Uneven terrain — low octave (gentle bumps)",
-    "octave_mid":   "Uneven terrain — mid octave",
-    "octave_high":  "Uneven terrain — high octave (rough surface)",
+    "stairs1":   "Stairs — low step height",
+    "stairs2":   "Stairs — medium step height",
+    "stairs3":  "Stairs — high step height",
+    "slope1":    "Slope — shallow angle",
+    "slope2":    "Slope — medium angle",
+    "slope3":   "Slope — steep angle",
+    "octave1":   "Uneven terrain — low octave (gentle bumps)",
+    "octave2":   "Uneven terrain — mid octave",
+    "octave3":  "Uneven terrain — high octave (rough surface)",
 }
 
 DIRECTIONS = ["forward", "backward", "lateral"]
@@ -46,8 +46,8 @@ def list_scenes():
         print(f"  {name:<15} {desc:<40} {status}")
     print(f"\nDirections: {', '.join(DIRECTIONS)}")
     print("\nExample:")
-    print("  mjpython run_test.py --scene stairs_low --direction forward")
-    print("  mjpython run_test.py --scene slope_mid --direction backward --viewer\n")
+    print("  mjpython run_test.py --scene stairs1 --direction forward")
+    print("  mjpython run_test.py --scene slope2 --direction backward --viewer\n")
 
 
 def main():
