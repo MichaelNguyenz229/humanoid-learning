@@ -82,3 +82,18 @@ python experiments/test_slope.py
 ## Author
 
 Michael Nguyen
+
+## Acknowledgements & Licenses
+ 
+This project builds on the following open-source work from Unitree Robotics, both licensed under the **BSD 3-Clause License**:
+ 
+**[unitree_rl_gym](https://github.com/unitreerobotics/unitree_rl_gym)**
+Pretrained G1 locomotion policy and MuJoCo deployment code.
+Copyright © Unitree Robotics
+ 
+**[unitree_mujoco](https://github.com/unitreerobotics/unitree_mujoco)**
+G1 MJCF robot description files and terrain generation tool.
+Copyright © Unitree Robotics
+ 
+BSD 3-Clause summary: retain copyright notice, do not use Unitree's name for promotion, disclose modifications.
+Full license: [BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause)

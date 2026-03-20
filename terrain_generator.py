@@ -291,7 +291,7 @@ if __name__ == "__main__":
                     nums=[10, 8])'''
 
     # Perlin heigh field
-    tg.AddPerlinHeighField(position=[8, 0, -0.15], size=[15,15])
+    tg.AddPerlinHeighField(position=[7, 0, -0.15], size=[15,15])
 
     # Heigh field from image
     '''tg.AddHeighFieldFromImage(position=[-1.5, 2.0, 0.0],
