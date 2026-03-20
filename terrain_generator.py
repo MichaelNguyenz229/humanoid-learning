@@ -182,12 +182,12 @@ class TerrainGenerator:
             position=[1.0, 0.0, 0.0],  # position
             euler=[0.0, -0.0, 0.0],  # attitude
             size=[1.0, 1.0],  # width and length
-            height_scale=0.2,  # max height
-            negative_height=0.2,  # height in the negative direction of z axis
+            height_scale=0.4,  # max height
+            negative_height=0.4,  # height in the negative direction of z axis
             image_width=128,  # height field image size
             img_height=128,
-            smooth=100.0,  # smooth scale
-            perlin_octaves=6,  # perlin noise parameter
+            smooth=40,  # smooth scale
+            perlin_octaves=40,  # perlin noise parameter
             perlin_persistence=0.5,
             perlin_lacunarity=2.0,
             output_hfield_image="height_field.png"):
@@ -276,7 +276,7 @@ if __name__ == "__main__":
     # level 1: position = [5.3, 0, 0.45], euler = [0.0, -0.1, 0.0], size=[10, 10, 0.1]
     # level 2: position=[5.3, 0, 1.3], euler=[0.0, -0.3, 0.0],size=[10, 10, 0.1]
     # level 3: position=[5.3, 0, 1.8], euler=[0.0, -0.4, 0.0],size=[10, 10, 0.1]
-    tg.AddBox(position = [5.3, 0, 0.45], euler = [0.0, -0.1, 0.0], size=[10, 10, 0.1])
+    # tg.AddBox(position = [5.3, 0, 0.45], euler = [0.0, -0.1, 0.0], size=[10, 10, 0.1])
 
     # Stairs
     #tg.AddStairs(init_pos=[1.0, 4.0, 0.0], yaw=0.0)
@@ -291,7 +291,7 @@ if __name__ == "__main__":
                     nums=[10, 8])'''
 
     # Perlin heigh field
-    #tg.AddPerlinHeighField(position=[6, 0, -0.03], size=[10,5])
+    tg.AddPerlinHeighField(position=[8, 0, -0.15], size=[15,15])
 
     # Heigh field from image
     '''tg.AddHeighFieldFromImage(position=[-1.5, 2.0, 0.0],
