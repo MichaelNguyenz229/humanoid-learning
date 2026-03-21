@@ -2,14 +2,14 @@
 run_test.py — Humanoid simulation test runner
 
 Usage:
-    mjpython run_test.py --scene stairs1 --direction forward
-    mjpython run_test.py --scene slope2  --direction backward
-    mjpython run_test.py --scene octave3 --direction lateral --viewer
+    mjpython run_test.py --scene stairs --direction f
+    mjpython run_test.py --scene slope2  --direction b
+    mjpython run_test.py --scene perlin --direction l --viewer
     mjpython run_test.py --list
 
 Arguments:
     --scene      Name of scene XML in scenes/ folder (without .xml)
-    --direction  forward | backward | lateral
+    --direction  f - forward | b - backward | l - lateral
     --viewer     Show interactive MuJoCo viewer (default: headless)
     --list       Print available scenes and exit
 """
@@ -24,18 +24,15 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 # Add entries here as you generate XMLs with the Unitree terrain tool
 SCENES = {
     "flat": "Flat terrain — baseline",
-    "stairs1":   "Stairs — low step height",
-    "stairs2":   "Stairs — medium step height",
-    "stairs3":  "Stairs — high step height",
     "slope1":    "Slope — shallow angle",
     "slope2":    "Slope — medium angle",
     "slope3":   "Slope — steep angle",
-    "octave1":   "Uneven terrain — low octave (gentle bumps)",
-    "octave2":   "Uneven terrain — mid octave",
-    "octave3":  "Uneven terrain — high octave (rough surface)",
+    "stairs":   "Stairs — low step height",
+    "perlin":   "Gentle uneven terrain",
+    "rough":   "Rough uneven terrain",
 }
 
-DIRECTIONS = ["forward", "backward", "lateral"]
+DIRECTIONS = ["f", "b", "l"]
 
 
 def list_scenes():
@@ -46,8 +43,8 @@ def list_scenes():
         print(f"  {name:<15} {desc:<40} {status}")
     print(f"\nDirections: {', '.join(DIRECTIONS)}")
     print("\nExample:")
-    print("  mjpython run_test.py --scene stairs1 --direction forward")
-    print("  mjpython run_test.py --scene slope2 --direction backward --viewer\n")
+    print("  mjpython run_test.py --scene stairs --direction f")
+    print("  mjpython run_test.py --scene slope2 --direction b --viewer\n")
 
 
 def main():
@@ -90,7 +87,8 @@ def main():
     # ── Build output CSV path ─────────────────────────────────────────────────
     results_dir = os.path.join(os.path.dirname(__file__), "results")
     os.makedirs(results_dir, exist_ok=True)
-    csv_path = os.path.join(results_dir, f"{args.scene}_{args.direction}.csv")
+    direction_map = {"f": "forward", "b":"backward", "l":"lateral"}
+    csv_path = os.path.join(results_dir, f"{args.scene}_{direction_map[(args.direction)]}.csv")
 
     # ── Print run summary ─────────────────────────────────────────────────────
     print(f"\n── Run summary ───────────────────────────────────")

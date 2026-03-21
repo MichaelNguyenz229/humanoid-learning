@@ -12,7 +12,7 @@ import sys
 
 # ── Edit these ────────────────────────────────────────────────────────────────
 
-SCENE = input("Scene (flat | stairs1 | stairs2 | ...): ").strip()
+SCENE = input("Scene (flat | stairs | slope1 | perlin | ...): ").strip()
 
 # ─────────────────────────────────────────────────────────────────────────────
 

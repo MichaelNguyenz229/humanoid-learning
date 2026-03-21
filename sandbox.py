@@ -20,7 +20,7 @@ from config import ROBOT_DIR, POLICY_PATH
 
 # ── Edit these ────────────────────────────────────────────────────────────────
 
-SCENE     = input("Scene (flat | stairs1 | stairs2 | ...): ").strip()
+SCENE     = input("Scene (flat | stairs | slope1 | perlin | ...): ").strip()
 VX        = float(input("Speed in m/s (e.g. 0.5): ").strip())
 DIRECTION = input("Direction (f - forward | b - backward | l - lateral): ").strip()
 

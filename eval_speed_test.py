@@ -50,9 +50,9 @@ FALL_HEIGHT        = 0.4    # meters — torso below this = fall
 
 # ── Direction → cmd vector ────────────────────────────────────────────────────
 DIRECTION_MAP = {
-    "forward":  lambda vx: np.array([ vx,  0, 0], dtype=np.float32),
-    "backward": lambda vx: np.array([-vx,  0, 0], dtype=np.float32),
-    "lateral":  lambda vx: np.array([  0, vx, 0], dtype=np.float32),
+    "f":  lambda vx: np.array([ vx,  0, 0], dtype=np.float32),
+    "b": lambda vx: np.array([-vx,  0, 0], dtype=np.float32),
+    "l":  lambda vx: np.array([  0, vx, 0], dtype=np.float32),
 }
 
 
@@ -164,9 +164,9 @@ def run_episode(model, data, policy, vx, cmd_fn, initial_quat=None, viewer_handl
 
 # ── Main sweep ────────────────────────────────────────────────────────────────
 QUAT_MAP = {
-    "forward":  None,
-    "backward": [0, 0, 0, 1],
-    "lateral":  [0.7071, 0, 0, -0.7071],
+    "f":  None,
+    "b": [0, 0, 0, 1],
+    "l":  [0.7071, 0, 0, -0.7071],
 }
 
 def run(scene_path, direction, csv_path, viewer=False):
@@ -229,7 +229,7 @@ def main():
         os.path.dirname(os.path.abspath(__file__)),
         "results", "standalone_forward.csv"
     )
-    run(scene_path=scene_path, direction="forward",
+    run(scene_path=scene_path, direction="f",
         csv_path=csv_path, viewer=False)
 
 if __name__ == "__main__":

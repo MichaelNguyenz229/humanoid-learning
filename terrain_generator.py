@@ -8,7 +8,7 @@ ROBOT = "g1"
 INPUT_SCENE_PATH = "./scene.xml"
 
 SCENE_DIR = "scenes/"
-name = input("Enter scene name (e.g. stairs_low): ").strip()
+name = input("Enter scene name (e.g. stairs: ").strip()
 OUTPUT_SCENE_PATH = os.path.join(SCENE_DIR, f"{name}.xml")
 
 
@@ -132,12 +132,12 @@ class TerrainGenerator:
 
     def AddSuspendStairs(self,
                          init_pos=[1.0, 0.0, 0.0],
-                         yaw=1.0,
+                         yaw=1,
                          width=0.2,
-                         height=0.15,
-                         length=1.5,
+                         height=0.05,
+                         length=3,
                          gap=0.1,
-                         stair_nums=10):
+                         stair_nums=30):
 
         local_pos = [0.0, 0.0, -0.5 * height]
         for i in range(stair_nums):
@@ -152,7 +152,7 @@ class TerrainGenerator:
                        init_pos=[1.0, 0.0, 0.0],
                        euler=[0.0, -0.0, 0.0],
                        nums=[10, 10],
-                       box_size=[0.5, 0.5, 0.5],
+                       box_size=[.5, .5, 0.5],
                        box_euler=[0.0, 0.0, 0.0],
                        separation=[0.2, 0.2],
                        box_size_rand=[0.05, 0.05, 0.05],
@@ -187,7 +187,7 @@ class TerrainGenerator:
             image_width=128,  # height field image size
             img_height=128,
             smooth=40,  # smooth scale
-            perlin_octaves=40,  # perlin noise parameter
+            perlin_octaves=90,  # perlin noise parameter
             perlin_persistence=0.5,
             perlin_lacunarity=2.0,
             output_hfield_image="height_field.png"):
@@ -283,15 +283,15 @@ if __name__ == "__main__":
 
 
     # Suspend stairs
-    #tg.AddSuspendStairs(init_pos=[1.0, 6.0, 0.0], yaw=0.0)
+    tg.AddSuspendStairs(init_pos=[1.0, 0, 0.0], yaw=0.0)
 
     # Rough ground
-    '''tg.AddRoughGround(init_pos=[2, -2, 0.1],
+    '''tg.AddRoughGround(init_pos=[.5, -5, 0.03],
                      euler=[0, 0, 0.0],
-                    nums=[10, 8])'''
+                    nums=[50, 50])'''
 
     # Perlin heigh field
-    tg.AddPerlinHeighField(position=[7.8, 0, -0.15], size=[15,15])
+    #tg.AddPerlinHeighField(position=[7.8, 0.0, -0.15], size=[15,15])
 
     # Heigh field from image
     '''tg.AddHeighFieldFromImage(position=[-1.5, 2.0, 0.0],
