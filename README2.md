@@ -1,15 +1,19 @@
-# humanoid-learning
-
+# Humanoid Simulation Evaluation
 Simulation evaluation framework for the Unitree G1 humanoid robot using MuJoCo. Evaluates a pretrained locomotion policy across terrain types and movement directions, logging episode outcomes for analysis.
+![G1 Baseline Walk](images/baseline_walk.png)
 
 ---
-
 ## What this does
-
 - Runs speed sweep experiments on the G1 across flat, staircase, slope, and uneven terrain
 - Tests forward, backward, and lateral movement directions
 - Logs episode outcomes (fall / timeout, survival time) to CSV for analysis
 - Includes an interactive sandbox for manual auditing
+
+![G1 Baseline Walk](images/slope3.jpg)
+![G1 Baseline Walk](images/stairs.jpg)
+![G1 Baseline Walk](images/rough.jpg)
+![G1 Baseline Walk](images/perlin.jpg)
+
 
 ---
 
@@ -42,17 +46,17 @@ humanoid-learning/
 # list available scenes
 mjpython run_test.py --list
 
-# run a sweep
-mjpython run_test.py --scene flat --direction forward
-mjpython run_test.py --scene stairs_low --direction backward
+# run a sweep f,b,l are forward, backward and laterally respectively
+mjpython run_test.py --scene flat --direction f 
+mjpython run_test.py --scene stairs --direction b
 
 # with viewer
-mjpython run_test.py --scene slope_mid --direction forward --viewer
+mjpython run_test.py --scene slope2 --direction f --viewer
 
 # sandbox — edit SCENE, VX, DIRECTION at top of file
 mjpython sandbox.py
 ```
-
+![mjpython sandbox.py -> stairs -> 1 -> b](images/backwards_stairs.jpg)
 ---
 
 ## Output
@@ -64,10 +68,16 @@ episode_id, commanded_vx, direction, outcome,  survival_time_s
 0,          0.2,          forward,   timeout,  10.0
 1,          1.4,          forward,   fall,     3.24
 ```
-
 ---
 
 ## Setup
+
+1. clone this repo
+2. mkdir models
+3. cd models
+4. git clone <https://github.com/unitreerobotics/unitree_rl_gym.git>
+4. git clone <https://github.com/unitreerobotics/unitree_mujoco.git>
+
 
 Models are not included in this repo. Place them at:
 
@@ -79,6 +89,7 @@ Models are not included in this repo. Place them at:
 Update paths in `config.py` if your layout differs.
 
 ---
+![mjpython sandbox.py -> stairs -> 1 -> b](images/obstacle_scene.png)
 
 ## Acknowledgements & Licenses
 
