@@ -44,6 +44,9 @@ CMD_SCALE     = np.array([2.0, 2.0, 0.25], dtype=np.float32)
 NUM_ACTIONS   = 12
 NUM_OBS       = 47
 
+
+
+
 DIRECTION_MAP = {
     "f":  lambda vx: np.array([ vx,  0, 0], dtype=np.float32),
     "b": lambda vx: np.array([-vx,  0, 0], dtype=np.float32),
