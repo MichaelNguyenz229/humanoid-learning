@@ -1,0 +1,22 @@
+<mujoco model="g1 scene">
+  <include file="g1_12dof.xml" />
+
+  <statistic center="0 0 0.1" extent="0.8" />
+
+  <visual>
+    <headlight diffuse="0.6 0.6 0.6" ambient="0.3 0.3 0.3" specular="0 0 0" />
+    <rgba haze="0.15 0.25 0.35 1" />
+    <global azimuth="-130" elevation="-20" />
+  </visual>
+
+  <asset>
+    <texture type="skybox" builtin="gradient" rgb1="0.3 0.5 0.7" rgb2="0 0 0" width="512" height="3072" />
+    <texture type="2d" name="groundplane" builtin="checker" mark="edge" rgb1="0.2 0.3 0.4" rgb2="0.1 0.2 0.3" markrgb="0.8 0.8 0.8" width="300" height="300" />
+    <material name="groundplane" texture="groundplane" texuniform="true" texrepeat="5 5" reflectance="0.2" />
+  </asset>
+
+  <worldbody>
+    <light pos="0 0 1.5" dir="0 0 -1" directional="true" />
+    <geom name="floor" size="0 0 0.05" type="plane" material="groundplane" />
+  <geom pos="1.2 0.0 0.025" type="box" size="0.1 0.75 0.025" quat="1.0 0.0 0.0 0.0" /><geom pos="1.4 0.0 0.07500000000000001" type="box" size="0.1 0.75 0.025" quat="1.0 0.0 0.0 0.0" /><geom pos="1.6 0.0 0.125" type="box" size="0.1 0.75 0.025" quat="1.0 0.0 0.0 0.0" /><geom pos="1.8 0.0 0.175" type="box" size="0.1 0.75 0.025" quat="1.0 0.0 0.0 0.0" /><geom pos="2.0 0.0 0.22499999999999998" type="box" size="0.1 0.75 0.025" quat="1.0 0.0 0.0 0.0" /><geom pos="2.2 0.0 0.27499999999999997" type="box" size="0.1 0.75 0.025" quat="1.0 0.0 0.0 0.0" /><geom pos="2.4 0.0 0.32499999999999996" type="box" size="0.1 0.75 0.025" quat="1.0 0.0 0.0 0.0" /><geom pos="2.5999999999999996 0.0 0.37499999999999994" type="box" size="0.1 0.75 0.025" quat="1.0 0.0 0.0 0.0" /><geom pos="2.8 0.0 0.42499999999999993" type="box" size="0.1 0.75 0.025" quat="1.0 0.0 0.0 0.0" /><geom pos="3.0 0.0 0.4749999999999999" type="box" size="0.1 0.75 0.025" quat="1.0 0.0 0.0 0.0" /><geom pos="3.1999999999999997 0.0 0.5249999999999999" type="box" size="0.1 0.75 0.025" quat="1.0 0.0 0.0 0.0" /><geom pos="3.4 0.0 0.575" type="box" size="0.1 0.75 0.025" quat="1.0 0.0 0.0 0.0" /><geom pos="3.6 0.0 0.625" type="box" size="0.1 0.75 0.025" quat="1.0 0.0 0.0 0.0" /><geom pos="3.8000000000000003 0.0 0.675" type="box" size="0.1 0.75 0.025" quat="1.0 0.0 0.0 0.0" /><geom pos="4.0 0.0 0.7250000000000001" type="box" size="0.1 0.75 0.025" quat="1.0 0.0 0.0 0.0" /><geom pos="4.200000000000001 0.0 0.7750000000000001" type="box" size="0.1 0.75 0.025" quat="1.0 0.0 0.0 0.0" /><geom pos="4.4 0.0 0.8250000000000002" type="box" size="0.1 0.75 0.025" quat="1.0 0.0 0.0 0.0" /><geom pos="4.600000000000001 0.0 0.8750000000000002" type="box" size="0.1 0.75 0.025" quat="1.0 0.0 0.0 0.0" /><geom pos="4.800000000000001 0.0 0.9250000000000003" type="box" size="0.1 0.75 0.025" quat="1.0 0.0 0.0 0.0" /><geom pos="5.000000000000001 0.0 0.9750000000000003" type="box" size="0.1 0.75 0.025" quat="1.0 0.0 0.0 0.0" /></worldbody>
+</mujoco>
