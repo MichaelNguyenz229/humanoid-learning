@@ -12,7 +12,7 @@ The core finding: the policy relies entirely on proprioception with no vision in
 ## Experiments
 
 ### 1. Baseline Walk
-![G1 Baseline Walk](assets/g1_baseline_walk.png)
+![G1 Baseline Walk](images/g1_baseline_walk.png)
 
 Loaded the pre-trained policy on flat ground to establish a performance baseline. The policy produces coordinated locomotion across 12 joints simultaneously at 50Hz — fundamentally different from classical PD control which simply holds a pose.
 
