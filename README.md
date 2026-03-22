@@ -85,7 +85,7 @@ episode_id, commanded_vx, direction, outcome,  survival_time_s
 
 1. **Clone this repo**
    ```bash
-   git clone <https://github.com/your-repo/humanoid_learning.git>
+   git clone <https://github.com/MichaelNguyenz229/humanoid_learning.git>
    cd humanoid_learning
    ```
 
