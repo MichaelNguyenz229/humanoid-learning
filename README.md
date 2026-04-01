@@ -23,9 +23,10 @@ Simulation evaluation framework for the Unitree G1 humanoid robot using MuJoCo. 
 
 ## Stack
 
-- Python 3.10
+- Python ≥ 3.10
 - MuJoCo 3.x
 - PyTorch (inference only)
+- [uv](https://docs.astral.sh/uv/) for dependency management
 - Apple Silicon / Mac — run with `mjpython`
 
 ---
@@ -33,18 +34,18 @@ Simulation evaluation framework for the Unitree G1 humanoid robot using MuJoCo. 
 ## Structure
 
 ```
-humanoid-learning/
+humanoid-sim-eval/
 ├── run_test.py              # CLI entry point
 ├── eval_speed_test.py       # core sweep runner
 ├── sandbox.py               # interactive viewer for manual testing
 ├── terrain_generator.py     # generate custom terrain XMLs
-├── terrain_viewer.py        # visualize terrains
 ├── config.py                # paths to robot model and policy
-├── requirements.txt         # Python dependencies
-├── environment.yml          # conda environment spec
-├── scenes/                  # terrain XML files
-├── results/                 # CSV output (gitignored)
-└── models/                  # external repos (see Setup)
+├── pyproject.toml           # project metadata & dependencies (uv)
+├── uv.lock                  # pinned dependency lockfile
+├── assets/
+│   └── g1/                  # robot model, meshes & policy weights
+├── scenes/                  # environment terrain XMLs & heightmaps
+└── results/                 # CSV output (gitignored)
 ```
 
 ---
@@ -81,7 +82,7 @@ episode_id, commanded_vx, direction, outcome,  survival_time_s
 
 ## Setup
 
-**Prerequisites:** Conda and MuJoCo 3.x installed.
+**Prerequisites:** [uv](https://docs.astral.sh/uv/getting-started/installation/) and MuJoCo 3.x installed.
 
 1. **Clone this repo**
    ```bash
@@ -89,28 +90,13 @@ episode_id, commanded_vx, direction, outcome,  survival_time_s
    cd humanoid_learning
    ```
 
-2. **Create and activate conda environment**
+2. **Install dependencies with uv**
    ```bash
-   conda env create -f environment.yml
-   conda activate humanoid
+   uv sync
    ```
+   This creates a `.venv` virtual environment and installs all pinned dependencies from `uv.lock`.
 
-3. **Install Python dependencies**
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-4. **Download required models** (not included in this repo)
-   ```bash
-   mkdir -p models
-   cd models
-   git clone https://github.com/unitreerobotics/unitree_rl_gym.git
-   git clone https://github.com/unitreerobotics/unitree_mujoco.git
-   cd ..
-   ```
-
-5. **Verify paths in `config.py`**
-   - Update `UNITREE_RL_GYM_PATH` and `UNITREE_MUJOCO_PATH` if models are stored elsewhere.
+   Robot model, meshes, and pretrained policy are included in `assets/g1/` — no extra downloads needed.
 
 ---
 ![mjpython sandbox.py -> stairs -> 1 -> b](images/obstacle_scene.png)

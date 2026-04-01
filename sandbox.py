@@ -14,7 +14,7 @@ import sys
 import time
 
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
-from config import ROBOT_DIR, POLICY_PATH
+from config import POLICY_PATH
 
 # ── Edit these ────────────────────────────────────────────────────────────────
 
@@ -63,7 +63,6 @@ def get_gravity_orientation(quaternion):
 
 def pd_control(target_q, q, kp, target_dq, dq, kd):
     return (target_q - q) * kp + (target_dq - dq) * kd
-
 
 # ── Load scene ────────────────────────────────────────────────────────────────
 scene_path = os.path.join(os.path.dirname(__file__), "scenes", f"{SCENE}.xml")

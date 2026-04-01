@@ -20,8 +20,8 @@ import mujoco
 import mujoco.viewer
 
 # ── Paths ─────────────────────────────────────────────────────────────────────
-INPUT_SCENE_PATH = "./scene.xml"
 SCENE_DIR        = "scenes/"
+INPUT_SCENE_PATH = os.path.join(SCENE_DIR, "flat.xml")
 ROBOT            = "g1"
 
 name             = input("Enter scene name (e.g. stairs): ").strip()
@@ -133,11 +133,11 @@ class TerrainGenerator:
                                             persistence=perlin_persistence,
                                             lacunarity=perlin_lacunarity)
                 terrain_image[y, x] = int((noise_value + 1) / 2 * 255)
-        cv2.imwrite("../unitree_robots/" + ROBOT + "/" + output_hfield_image, terrain_image)
+        cv2.imwrite(os.path.join(SCENE_DIR, output_hfield_image), terrain_image)
         hfield = xml_et.SubElement(self.asset, "hfield")
         hfield.attrib["name"] = "perlin_hfield"
         hfield.attrib["size"] = list_to_str([size[0]/2, size[1]/2, height_scale, negative_height])
-        hfield.attrib["file"] = "../" + output_hfield_image
+        hfield.attrib["file"] = output_hfield_image
         geo = xml_et.SubElement(self.worldbody, "geom")
         geo.attrib["type"]   = "hfield"
         geo.attrib["hfield"] = "perlin_hfield"
@@ -155,11 +155,11 @@ class TerrainGenerator:
         terrain_image = cv2.cvtColor(resized_image, cv2.COLOR_BGR2GRAY)
         if invert_gray:
             terrain_image = 255 - terrain_image
-        cv2.imwrite("../unitree_robots/" + ROBOT + "/" + output_hfield_image, terrain_image)
+        cv2.imwrite(os.path.join(SCENE_DIR, output_hfield_image), terrain_image)
         hfield = xml_et.SubElement(self.asset, "hfield")
         hfield.attrib["name"] = "image_hfield"
         hfield.attrib["size"] = list_to_str([size[0]/2, size[1]/2, height_scale, negative_height])
-        hfield.attrib["file"] = "../" + output_hfield_image
+        hfield.attrib["file"] = output_hfield_image
         geo = xml_et.SubElement(self.worldbody, "geom")
         geo.attrib["type"]   = "hfield"
         geo.attrib["hfield"] = "image_hfield"
@@ -178,7 +178,7 @@ def launch_viewer(scene_path):
     print(f"Launching viewer for: {scene_path}")
     print("Mouse drag to rotate, scroll to zoom, right-click drag to pan, ESC to exit\n")
 
-    model = mujoco.MjModel.from_xml_path(scene_path)
+    model = mujoco.MjModel.from_xml_path(os.path.abspath(scene_path))
     data  = mujoco.MjData(model)
 
     # Compute initial pose without stepping physics

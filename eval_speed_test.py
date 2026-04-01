@@ -17,8 +17,8 @@ import os
 import sys
 import time
 
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from config import ROBOT_DIR, POLICY_PATH
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+from config import POLICY_PATH, SCENE_DIR
 
 # ── Physics constants ─────────────────────────────────────────────────────────
 SIMULATION_DT      = 0.002   # physics step size — 500 steps/sec
@@ -224,7 +224,7 @@ def run(scene_path, direction, csv_path, viewer=False):
 # ── Standalone ────────────────────────────────────────────────────────────────
 
 def main():
-    scene_path = os.path.join(ROBOT_DIR, "scene.xml")
+    scene_path = os.path.join(SCENE_DIR, "flat.xml")
     csv_path   = os.path.join(
         os.path.dirname(os.path.abspath(__file__)),
         "results", "standalone_forward.csv"
